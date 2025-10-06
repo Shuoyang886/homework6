@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>homework2</title>
+	<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <style>
+        body {
+            background-color: #f0f8ff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+	<h1>Homework 2 - random dots</h1>
+	<script>
+		// Title: Homework 2
+        // Author: Shuo Yang
+        // Date: Sept 2025
+        // Simple Description: this code generate random rectangle with random color and transparency.
+        // Instructions: run the code and mouse click
+		function setup() {
+		   createCanvas(400, 400);
+		   frameRate(6);
+		  }
+		function draw() {
+			  background(220);
+			  n = 400;
+			  for (let i = int(random(0, 401)); i < n; i++) {
+				  noStroke();
+				  rect(i, i, i, i);
+			  }
+			
+			  let a = int(random(30, 370));
+			  let b = int(random(30, 370));
+			  let R = int(random(0, 256));
+			  let B = int(random(0, 256));
+			  let G = int(random(0, 256));
+			  fill(R, B, G);
+			  rect(a, b, a / 2 + 1, b / 2);
+
+			
+			  fill(R, B, G, G);
+			  rect(a + 30, 0, 30, b / 2);
+			  ellipse(a - 4, b - 20, a * b);
+			  if (mouseIsPressed)
+				  ellipse(
+					  mouseX + int(random(30)),
+					  mouseY + int(random(30)),
+					  int(random(10, 100))
+				  );
+		  }
+		
+		function keyPressed() {
+			  fill(255);
+			  rect(0, 0, 400, 400);
+		  }
+     </script>
+	<p>click the mouse to interact</p>
+</body>
+</html>

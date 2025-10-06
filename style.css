@@ -1,0 +1,20 @@
+@charset "utf-8";
+/* CSS Document */
+/* 设置整个网页的背景和文字居中 */
+body {
+    background-color: #7DFFE5;
+    text-align: center;
+    font-family: "Microsoft YaHei", sans-serif;
+}
+
+/* 设置标题样式 */
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+/* 设置段落文字样式 */
+p {
+    font-size: 20px;
+}
+

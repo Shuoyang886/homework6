@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>homework3</title>
+	    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f0f8ff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+	<h1>Homework 3 - form generator</h1>
+	<script>//Title: Homework 3
+//Author:Shuo Yang
+//Date: AU 2025
+//Simple Description: this code generate a interactive face and each time the mouse is clicked, the color change for once 
+//Instruction: move mouse to change the size, press mouse to change color
+
+let scale = 100;
+let faceX = 1;
+let faceY = 1;
+let noseX = 25;
+let noseY = 25;
+let leftEyeX = 150;
+let rightEyeX = 250;
+let mouseH = 270;
+
+function setup() {
+  createCanvas(400, 400);
+  //draw one color as the original color
+  R = int(random(0, 255));
+  B = int(random(0, 255));
+  G = int(random(0, 255));
+}
+
+function draw() {
+  background(220);
+  faceX = map(mouseX, 0, width, 0.25, 2.5, true);
+  faceY = map(mouseY, 0, height, 0.25, 2.5, true);
+  noseX = map(faceX, 0.25, 2.5, 10, 60);
+  noseY = map(faceY, 0.25, 2.5, 10, 100);
+  mouseH = map(faceY, 0.25, 2.5, 210, 270);
+
+  face(width / 2, height / 2);
+}
+
+function face(x, y) {
+  strokeWeight(4);
+  strokeJoin(ROUND);
+
+  //face shape
+  ellipseMode(CENTER);
+  fill(R, G, B);
+  ellipse(x, y, scale * faceX, scale * faceY, scale / 4);
+
+  //nose
+  rectMode(CENTER);
+  rect(width / 2, height / 2, noseX, noseY);
+
+  //eyes
+  if (mouseX < width / 2) {
+    leftEyeX = 190 - (mouseX / 200) * 40;
+    rightEyeX = 210 + (mouseX / 200) * 40;
+  } else {
+    leftEyeX = 150;
+    rightEyeX = 250;
+  }
+
+  fill(255);
+  ellipse(leftEyeX - faceX * 10, 180, 50 + faceX * 10, 30 + faceY * 10); //left
+  fill(0);
+  ellipse(leftEyeX - faceX * 10, 180, 30 + faceX);
+  fill(255);
+  ellipse(rightEyeX + faceX * 10, 180, 50 + faceX * 10, 30 + faceY * 10); //right
+  fill(0);
+  ellipse(rightEyeX + faceX * 10, 180, 30 + faceX);
+
+  //eyebrows
+  rectMode(CENTER);
+  rect(leftEyeX - faceX * 10, 150 - faceY, 55, 10); //left
+  rect(rightEyeX + faceX * 10, 150 - faceY, 55, 10); //right
+
+  //mouse
+  beginShape(LINES);
+  vertex(leftEyeX, mouseH);
+  vertex(rightEyeX, mouseH);
+  endShape();
+}
+//when mouse is pressed, generate another color for once
+function mousePressed() {
+  R = int(random(0, 255));
+  B = int(random(0, 255));
+  G = int(random(0, 255));
+}
+</script>
+	<p>click mouse to change color, move mouse to change size</p>
+</body>
+</html>
