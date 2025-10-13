@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<link href="story_style.css" rel="stylesheet" type="text/css">
+<head>
+<meta charset="utf-8">
+<title>story4</title>
+	<script>
+    function recordChoice(choice) {
+      // 获取现有的记录（如果有）
+      let choices = JSON.parse(localStorage.getItem("choices")) || [];
+      choices.push(choice); // 把这次的选择加入数组
+      localStorage.setItem("choices", JSON.stringify(choices)); // 存回 localStorage
+
+      // 跳转到下一页
+      window.location.href = "ending.html";
+    }
+  </script>
+</head>
+
+<body>
+	<h1>No.4</h1>
+    <p>Night has fallen. You walk alone, carrying a flickering lantern through a forest path veiled in shadows.</p>
+    <p>Along the way, pale ghosts drift between the trees, each pointing toward a different road. Their whispers are ancient, soft, and persistent.</p>
+    <p>Some speak with the voice of tradition, others with the call of rebellion. Some offer comfort. Some, only questions.</p>
+	<img src="images/ghost_and_pathway.png" alt="ghost in the dark" class="story-image">
+	<p>You must decide:</p>
+	<div class="choice-buttons">
+	<button onClick="recordChoice('mainstream')">A. Follow the most well-lit path, guided by the voices of mainstream belief</button>
+	<button onClick="recordChoice('minority')">B. Follow a quiet, twisted trail marked by unfamiliar voices </button>
+	<button onClick="recordChoice('animal')">C. Trust no voice — walk by instinct, like an animal of the dark </button>
+	<button onClick="recordChoice('self_create')">D. Find your own way, explore freely</button>
+	</div>
+</body>
+</html>

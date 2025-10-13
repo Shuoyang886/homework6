@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+	<link href="story_style.css" rel="stylesheet" type="text/css">
+<head>
+<meta charset="utf-8">
+<title>story3</title>
+	<script>
+    function recordChoice(choice) {
+      // 获取现有的记录（如果有）
+      let choices = JSON.parse(localStorage.getItem("choices")) || [];
+      choices.push(choice); // 把这次的选择加入数组
+      localStorage.setItem("choices", JSON.stringify(choices)); // 存回 localStorage
+
+      // 跳转到下一页
+      window.location.href = "story4.html";
+    }
+  </script>
+</head>
+
+<body>
+	<h1>No.3</h1>
+    <p>The diligent gardener tends to his vibrant garden. He pulls out weeds, waters the soil, and nourishes the blooming flowers.</p>
+	<p>Bright colors fill every corner, and the rich fragrance of the blossoms lingers in the air.</p>
+	<img src="images/gardener_in_garden.png" alt="gardener is working" class="story-image">
+	<p>You must decide:</p>
+	<div class="choice-buttons">
+	<button onClick="recordChoice('care_more_precious')">A. Focus more on the rare and beautiful flowers</button>
+	<button onClick="recordChoice('neglect_normal')">B. Pay less attention to the average flowers </button>
+	<button onClick="recordChoice('ignore_common')">C. Ignore the common flowers altogether </button>
+	<button onClick="recordChoice('treat_equally')">D. Treat every flower with equal care</button>
+	</div>
+</body>
+</html>

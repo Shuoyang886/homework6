@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+	<link href="story_style.css" rel="stylesheet" type="text/css">
+<head>
+<meta charset="utf-8">
+<title>story 1</title>
+	<script>
+    function recordChoice(choice) {
+      // 获取现有的记录（如果有）
+      let choices = JSON.parse(localStorage.getItem("choices")) || [];
+      choices.push(choice); // 把这次的选择加入数组
+      localStorage.setItem("choices", JSON.stringify(choices)); // 存回 localStorage
+
+      // 跳转到下一页
+      window.location.href = "story2.html";
+    }
+  </script>
+</head>
+
+<body>
+	<h1>No.1</h1>
+	<p><strong>Welcome to a world where every being is bound tightly together.</strong></p>
+<p>The giant spider looms above, weaving its endless web. The sky is veiled, and sunlight struggles to reach the earth.</p>
+	<img src="images/spider_in_the_sky.png" alt="A spider weaving in the sky" class="story-image">
+	<p>You must decide where the precious rays will shine:</p>
+	<div class="choice-buttons">
+	<button onClick="recordChoice('culture')">A. The flower field</button>
+	<button onClick="recordChoice('enterprise')">B. The forest </button>
+	<button onClick="recordChoice('fundamental_structure')">C. The grassland </button>
+	<button onClick="recordChoice('equal')">D. Distribute sunlight equally</button>
+	</div>
+</body>
+</html>

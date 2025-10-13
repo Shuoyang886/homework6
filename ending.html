@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+	<link href="story_style.css" rel="stylesheet" type="text/css">
+<head>
+<meta charset="utf-8">
+<title>ending</title>
+	 <style>
+    .ending-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 40px;
+      line-height: 1.8;
+    }
+    .player-name {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #444;
+    }
+    .restart-buttons {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .restart-buttons a {
+      margin: 0 10px;
+    }
+	.restart-buttons a.button {
+  display: inline-block;
+  padding: 15px 30px;
+  background-color: #f0983a;
+  color: aliceblue;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+}
+.restart-buttons a.button:hover {
+  background-color: #f0583a;
+		 }  
+	</style>
+</head>
+	
+	
+	
+	
+	
+	
+	
+<body>
+  <div class="ending-container">
+    <p class="player-name" id="playerName"></p>
+    
+    <div id="endingContent">
+      <!-- 动态生成的结局文本会插入这里 -->
+    </div>
+
+    <div class="restart-buttons">
+      <a href="index.html" class="button">Return to Home</a>
+      <a href="homework7.html" class="button" onclick="restartGame()">Restart Game</a>
+
+    </div>
+  </div>
+
+  <script>
+    // 获取玩家名字
+    const playerName = localStorage.getItem("playerName") || "player";
+    document.getElementById("playerName").textContent = playerName + " 's end：";
+
+    // 获取之前选择的四个选项
+    const choices = JSON.parse(localStorage.getItem("choices")) || [];
+
+    // 分别解构四个选择
+    const [industry, enterprise, education, ideology] = choices;
+
+    // 你之后可以在这里调用生成结局的函数
+    const endingContent = generateEnding(industry, enterprise, education, ideology);
+
+    // 把内容塞进页面
+    document.getElementById("endingContent").innerHTML = endingContent;
+
+    // 生成文本
+    function generateEnding(industry, enterprise, education, ideology) {
+  let industryText = "";
+
+  // 国家产业导向（题目1）
+  switch (industry) {
+    case "culture":
+      industryText = `
+        <p>This country has chosen to pour most of its resources into cultural industries. Entertainment, idols, art, and media are at the center of public attention.</p>
+        <p>Here, becoming a successful artist, influencer, or performer is seen as a way to escape ordinary life. But behind the scenes lies a ruthless competition where only the most polished survive.</p>
+        <p>The brighter the spotlight, the darker the shadows behind it. In such an environment, appearance, opportunity, and capital determine almost everything.</p>
+      `;
+      break;
+    case "enterprise":
+      industryText = `
+        <p>The country's core focus lies in technology and enterprise development. Programming, finance, AI, and biotech dominate the job market and social hierarchy.</p>
+        <p>Students rush into STEM fields, and cities are filled with tech giants and startups. But behind the innovation lies an endless race for relevance, and a culture of constant self-upgrading.</p>
+        <p>In this world, knowledge is power — but only if you run fast enough to keep up with the system.</p>
+      `;
+      break;
+    case "fundamental_structure":
+      industryText = `
+        <p>Here, the nation has invested heavily in infrastructure and public services. Roads, hospitals, schools, and transport systems steadily improve year by year.</p>
+        <p>Life is stable, safe, and predictable. But with innovation suppressed, people find few chances to truly stand out or climb higher.</p>
+        <p>The safest path is to stay within the system, and accept a life of steady but limited growth.</p>
+      `;
+      break;
+    case "equal":
+      industryText = `
+        <p>The country promotes balanced development across all industries — cultural, technological, and public sectors alike receive equal attention.</p>
+        <p>This multi-directional growth ensures stability and diversity, but also dilutes opportunities for dramatic breakthroughs.</p>
+        <p>There is no obvious ladder to success. Every path is open, but none is easy.</p>
+      `;
+      break;
+    default:
+      industryText = `<p>Something went wrong with your industry choice.</p>`;
+  }
+		
+		
+  //企业导向（题目2）
+  let enterpriseText = "";
+		
+  switch (enterprise) {
+  case "more_break":
+    enterpriseText = `
+      <p>Under the pressure of national policies encouraging consumption or childbirth, companies began offering more benefits and rest days to employees.</p>
+      <p>For a brief time, ${playerName} experienced a rare moment of balance — work did not dominate life, and there was space to breathe.</p>
+      <p>But these benefits were not born of generosity, but of strategy. The moment the policy winds changed, so did the atmosphere at work.</p>
+    `;
+    break;
+  case "less_break":
+    enterpriseText = `
+      <p>As the economy weakened, companies shifted their strategy: fewer hires, more responsibilities. The Queen Bee demanded more from every worker.</p>
+      <p>${playerName} found themselves constantly under pressure, doing the work of many with little relief. Rest became a luxury; burnout, a norm.</p>
+      <p>The harder they worked, the less visible their effort became — swallowed by a system trying to survive.</p>
+    `;
+    break;
+  case "hire_more":
+    enterpriseText = `
+      <p>Fueled by a booming economy, businesses expanded aggressively. The Queen Bee sent out calls for more workers, new branches, and bigger visions.</p>
+      <p>${playerName} was swept up in this momentum, easily landing a job and rising through the ranks — but so were thousands of others.</p>
+      <p>In a world of rapid growth, competition was constant, and even success felt temporary.</p>
+    `;
+    break;
+  case "job_cut":
+    enterpriseText = `
+      <p>When a crisis struck — be it economic collapse or a sudden pandemic — companies were quick to cut losses. Downsizing became the new strategy.</p>
+      <p>The Queen Bee clipped the wings of many workers. ${playerName}, once a cog in the machine, now found themselves discarded, with few safety nets.</p>
+      <p>In the silence that followed, survival became a personal challenge, not a shared responsibility.</p>
+    `;
+    break;
+  default:
+    enterpriseText = `<p>Something went wrong with your enterprise choice.</p>`;
+}
+//education(题目3)
+let educationText = "";
+
+switch (education) {
+  case "care_more_precious":
+    educationText = `
+      <p>In this world, the gardener devoted extra care to the rarest, most beautiful flowers — those born into elite families, or raised in privileged regions.</p>
+      <p>${playerName} was not one of them. While others thrived in well-funded schools with low admission barriers, ${playerName} faced harsher tests and fewer chances, despite trying just as hard.</p>
+      <p>The soil was uneven from the beginning. Some bloomed effortlessly, while others struggled just to grow.</p>
+    `;
+    break;
+  case "neglect_normal":
+    educationText = `
+      <p>The gardener gave minimal attention to the ordinary flowers. No direct harm was done, but no extra help was offered either.</p>
+      <p>${playerName} grew up in a region where universities were scarce, and competition was brutal. Even with top scores, it was harder to gain entry than it was for students from more favored areas.</p>
+      <p>Fairness became a myth — especially when geography and background quietly shaped the rules of the game.</p>
+    `;
+    break;
+  case "ignore_common":
+    educationText = `
+      <p>Ordinary flowers were left to the wind. The gardener focused elsewhere, and ${playerName} had to fight for education in a system that offered no real support.</p>
+      <p>There were no subsidies, no reforms, no outreach. A child's future depended almost entirely on their parents' wealth or their own desperation.</p>
+      <p>In this world, the ladder was missing several rungs — and ${playerName} began the climb already far behind.</p>
+    `;
+    break;
+  case "treat_equally":
+    educationText = `
+      <p>The gardener treated all flowers equally, watering each with care and attention. Schools were funded, fees were waived, and basic access was universal.</p>
+      <p>Yet even with a level field, some flowers reached higher. Some had better soil at home, or extra sunlight from private tutors, or simply the courage to grow wild.</p>
+      <p>For ${playerName}, opportunity existed — but it required more than fairness to turn into success.</p>
+    `;
+    break;
+  default:
+    educationText = `<p>Something went wrong with your education choice.</p>`;
+}
+		
+let ideologyText = "";
+
+switch (ideology) {
+  case "mainstream":
+    ideologyText = `
+      <p>Guided by the lanterns of mainstream belief, ${playerName} walked a road familiar to many — structured, predictable, and socially accepted.</p>
+      <p>This path brought stability. People understood them, welcomed them, and systems were designed with their values in mind. But every system has its walls.</p>
+      <p>Sometimes, ${playerName} wondered what lay beyond — but the comfort of belonging often outweighed the cost of curiosity.</p>
+    `;
+    break;
+  case "minority":
+    ideologyText = `
+      <p>${playerName} chose to follow the faint, flickering lights of minority ideologies — strange to many, but strangely comforting to them.</p>
+      <p>On this path, ${playerName} experienced isolation, skepticism, and occasional rejection. Yet not all difference leads to liberation — some roads loop back to old cages dressed in new words.</p>
+      <p>Freedom, here, was not guaranteed — only the experience of being apart.</p>
+    `;
+    break;
+  case "animal":
+    ideologyText = `
+      <p>Ignoring all voices but their own, ${playerName} lived by instinct. Decisions were driven by gut feeling, raw desire, and survival logic.</p>
+      <p>To many, this seemed reckless — selfish even. But in a world built on competition, animal instinct often proved sharper than reason.</p>
+      <p>Like Scarlett O’Hara, ${playerName} moved through life with unapologetic will. They didn’t always know where they were going — but they kept moving.</p>
+    `;
+    break;
+  case "self_create":
+    ideologyText = `
+      <p>Refusing to follow any known path, ${playerName} forged their own, guided only by inner conviction.</p>
+      <p>This road was quiet, confusing, and often filled with doubt. There were no footsteps to follow, no maps to check — only a dim light carried within.</p>
+      <p>Some called them brave, others called them lost. But every step ${playerName} took was truly theirs.</p>
+    `;
+    break;
+  default:
+    ideologyText = `<p>Something went wrong with your ideology choice.</p>`;
+}
+
+
+  return `
+    <h2>National Direction</h2>
+    ${industryText}
+
+    <h2>Corporate Environment</h2>
+    ${enterpriseText}
+    
+
+    <h2>Educational Opportunities</h2>
+    ${educationText}
+
+    <h2>Ideological Journey</h2>
+    ${ideologyText}
+  `;
+}
+function restartGame() {
+  localStorage.removeItem("playerName");
+  localStorage.removeItem("choices");
+  window.location.href = "index.html"; // 返回首页重新开始
+}
+
+  </script>
+</body>
+</html>

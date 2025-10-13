@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+	<link href="story_style.css" rel="stylesheet" type="text/css">
+
+<head>
+<meta charset="utf-8">
+<title>homework 7</title>
+<script>
+// 保存名字到 localStorage
+function saveName() {
+    var playerName = document.getElementById("playerName").value;
+    if (playerName.trim() !== "") {
+        localStorage.setItem("playerName", playerName);
+    }
+}
+</script>
+</head>
+
+<body>
+<h1>Homework 7</h1>
+<h3>Web Weaver</h3>
+<h3><strong>We are all web weavers for each other.</strong></h3>
+<p>Please type your name (anything) here:</p>
+<!-- 这里是输入框 -->
+<input type="text" id="playerName" placeholder="Enter your name" />
+	<div class="button-group">
+	<h1><a href="story1.html" class="button" onclick="saveName()">Get Started</a></h1>
+	<h1><a href="index.html" class="button">Return</a></h1>
+	</div>
+</body>
+</html>

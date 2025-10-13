@@ -1,0 +1,65 @@
+@charset "utf-8";
+/* CSS Document */
+body {background-color:black;
+text-align: center}
+
+/* 按钮组水平排列并居中 */
+.button-group {
+  display:flex;
+  justify-content: center;
+  gap: 40px; /* 两个按钮之间的间距 */
+  margin-top: 40px;
+}
+
+.button-group h1{
+	margin: 0;
+}
+
+/* 链接样式像按钮 */
+.button-group a.button {
+  display: inline-block;
+  padding: 15px 30px;
+  background-color: #f0983a;
+  color: aliceblue;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+}
+
+/* 悬停效果 */
+.button-group a.button:hover {
+  background-color: #f0583a;
+}
+
+h1{color: aliceblue}
+h3{color: aliceblue;
+font-family: Constantia, "Lucida Bright", "DejaVu Serif", Georgia, "serif"}
+p{font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", "serif";
+	color: aliceblue}
+
+
+
+/*story1*/
+.choice-buttons {
+  margin-top: 30px;
+}
+
+.choice-buttons button {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 10px auto;
+  padding: 12px 20px;
+  font-size: 18px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.choice-buttons button:hover {
+  background-color: #222;
+}

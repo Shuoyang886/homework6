@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+	<link href="story_style.css" rel="stylesheet" type="text/css">
+<head>
+<meta charset="utf-8">
+<title>story2</title>
+	<script>
+    function recordChoice(choice) {
+      // 获取现有的记录（如果有）
+      let choices = JSON.parse(localStorage.getItem("choices")) || [];
+      choices.push(choice); // 把这次的选择加入数组
+      localStorage.setItem("choices", JSON.stringify(choices)); // 存回 localStorage
+
+      // 跳转到下一页
+      window.location.href = "story3.html";
+    }
+  </script>
+</head>
+
+<body>
+	<h1>No.2</h1>
+    <p>The Queen Bee reigns over a vast, buzzing kingdom. Her workers are known for their tireless labor and unwavering discipline.</p>
+	<p> As their sovereign, she must decide how to guide their efforts.</p>
+	<img src="images/Queen_Bee.png" alt="Queen Bee rules her kingdom" class="story-image">
+	<p>You must decide:</p>
+	<div class="choice-buttons">
+	<button onClick="recordChoice('more_break')">A. Allow them more time to rest</button>
+	<button onClick="recordChoice('less_break')">B. Demand longer hours with fewer breaks </button>
+	<button onClick="recordChoice('hire_more')">C. Send more bees out to gather resources </button>
+	<button onClick="recordChoice('job_cut')">D. Reduce the workforce to increase efficiency</button>
+	</div>
+</body>
+</html>
