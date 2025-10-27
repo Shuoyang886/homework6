@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>homework8</title>
+		<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <style>
+        body {
+            background-color: #f0f8ff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+	<h1>homework 8 - The Experimental Clock</h1>
+	<p><a href="index.html">homepage</a></p>
+	
+	<script>
+		//Author: Shuo Yang
+//Title: Homework 8 - The Experimental Clock
+//Date: Oct 27 2025
+//Instruction: press "a" to pause the clock, pree again to run the clock; after pausing, drag orange circle to move the hands to adjust time, the custom time won't be recorded after press "a"
+
+let img;
+let scaleFactor=0.23;
+let isRunning=true;
+let customTime=null;
+let hourAngle, minAngle, secAngle;
+let hourLen, minLen, secLen;
+let radius;
+let dragging = null; 
+let hitRadius = 20; // the area around the hand that could be hitted
+let hover=null;
+let cx, cy; //center's coordinates, means width/2,height/2      
+
+
+function preload(){
+  img=loadImage('images/girlrun.PNG');
+}//uploading the image and show the image in code
+
+function setup() {
+  createCanvas(windowWidth,windowHeight);
+  rectMode(CENTER);
+  angleMode(DEGREES);//the rotate angle based on degrees
+  
+  cx = width / 2;
+  cy = height / 2;
+  
+  
+}
+
+function draw() {
+  background(220);
+  
+  
+ radius = min(width, height) * 0.9 / 2;
+  hourLen = radius * 0.6;
+  minLen = radius * 0.8;
+  secLen = radius * 0.9;
+
+  
+  //set the time based on real time
+  let h=hour();
+  let m=minute();
+  let s=second();
+  
+  
+  if (isRunning) {
+    // realtime
+    h = hour();
+    m = minute();
+    s = second();
+  } else if (customTime) {
+    ({ h, m, s } = customTime);
+  } 
+  
+  
+  //let the rotate angle of background reflect based on real time
+  let totalSeconds = h * 3600 + m * 60 + s;
+  let bgAngle = map(totalSeconds, 0, 86400, 0, 360);
+  
+  push();
+  //rotate based on center point
+  translate(cx,cy);
+  rotate(bgAngle);
+  
+  //larger than background
+  let diameter = max(windowWidth,windowHeight)*1.5;
+  
+  //day
+  noStroke();
+  fill(224, 236, 255);
+  arc(0,0,diameter,diameter,-90,90,PIE);
+  //night
+  fill(62, 55, 196);
+  arc(0,0,diameter,diameter,90,270,PIE);
+  pop();
+  
+
+  if (isRunning) {
+  secAngle = map(s, 0, 60, 0, 360);//the value second would rotate from 0 degree to 360 degree when it goes from 0 second to 60 second
+  minAngle = map(m + s / 60, 0, 60, 0, 360);//the value minute and second(since the minute hand would also move while the second hand is constantly moving) （s/60 is translating the seconds into minutes）would rotate from 0 degree to 360 degree when it goes from 0 minute to 60 minutes
+  let hourIn12 = h % 12 + m / 60;//translate 24 hours to 12 hours, minutes to hours
+  hourAngle = map(hourIn12, 0, 12, 0, 360);
+}
+  
+  push();
+  translate(cx, cy);
+ 
+
+  drawHand(secAngle, secLen, color(255, 0, 0), 2); 
+  drawHand(minAngle, minLen, color(0), 4); 
+  drawHand(hourAngle, hourLen, color(0), 6); 
+
+  // center
+  fill(0);
+  ellipse(0, 0, 10, 10);
+  pop();
+  
+
+  imageMode(CENTER);
+  image(img, windowWidth / 2, windowHeight / 2,img.width * scaleFactor, img.height * scaleFactor);//change the size smaller and put it in the center
+  
+  
+  resetMatrix();
+  textAlign(CENTER, CENTER);
+  textSize(50);
+  fill(0);
+  let margin = 60; 
+  text("12",width/2,margin / 2);
+  text("3",width-margin,height/2);
+  text("6",width/2,height-margin/2);
+  text("9",margin/2,height/2);
+  
+  
+  
+    hover = null;
+  let posS = handEndPos(secAngle, secLen );
+  let posM = handEndPos(minAngle, minLen );
+  let posH = handEndPos(hourAngle, hourLen );
+  
+  if (dist(mouseX, mouseY, posS.x, posS.y) < hitRadius) hover = 'second';
+  else if (dist(mouseX, mouseY, posM.x, posM.y) < hitRadius) hover = 'minute';
+  else if (dist(mouseX, mouseY, posH.x, posH.y) < hitRadius) hover = 'hour';
+
+
+  
+  noFill();
+  stroke(255, 150, 0);
+  strokeWeight(2);
+  if (hover === 'second' || dragging === 'second') ellipse(posS.x, posS.y, hitRadius * 2);
+  if (hover === 'minute' || dragging === 'minute') ellipse(posM.x, posM.y, hitRadius * 2);
+  if (hover === 'hour' || dragging === 'hour') ellipse(posH.x, posH.y, hitRadius * 2);
+  
+  
+   fill(255, 239, 92); 
+  noStroke(); 
+  ellipse(posS.x, posS.y, 8); 
+  ellipse(posM.x, posM.y, 8); 
+  ellipse(posH.x, posH.y, 8);
+}
+
+
+
+function drawHand(angle, length, col, weight) {
+  push();//keep the current coordinate status
+  rotate(angle);//rotate the coordinate axis, not the lines
+  stroke(col);
+  strokeWeight(weight);
+  line(0, 0, 0, -length); 
+  //draw a line that is pointing up,since there are three lines contain different variables that would affect how they move,so there are three lines moving in different speed
+  pop();
+  //make sure the previous rotate code is working, and the next hand won't be affected by current rotate code
+  
+ 
+}
+
+
+
+function handEndPos(angleDeg, length) {
+  // angleDeg is spinning from 0 degree, started at the number "12", to 360 degree
+  let angRad = radians(angleDeg); // by default,cos()use radians, and in p5.js, the right of x axis represent 0 degree, and y axis is upsidown, compared to the math coordinate system. -90 would make the coordinate system rotate 90 degree so the 0 degree is on the top
+  let x = cx + sin(angRad) * length;
+  let y = cy - cos(angRad) * length;
+  return { x, y };
+
+}
+
+
+
+function mousePressed() {
+  if (isRunning) return; // allow drag only after pause
+  // which hand is selected（first second -> minute -> hour）
+  let posS = handEndPos(secAngle, secLen );
+  let posM = handEndPos(minAngle, minLen  );
+  let posH = handEndPos(hourAngle, hourLen);
+
+  if (dist(mouseX, mouseY, posS.x, posS.y) < hitRadius) dragging = 'second';
+  else if (dist(mouseX, mouseY, posM.x, posM.y) < hitRadius) dragging = 'minute';
+  else if (dist(mouseX, mouseY, posH.x, posH.y) < hitRadius) dragging = 'hour';
+}
+
+function mouseDragged() {
+  if (!dragging) return;
+  let ang = mouseToClockAngle(mouseX, mouseY);
+  if (dragging === 'hour') {
+    hourAngle = ang;
+    let hourIn12 = map(hourAngle, 0, 360, 0, 12);
+    customTime.h = floor(hourIn12);//since the position of mouse could be in between two hour numbers, so calculate a closet integar that is less than or equal to a number
+    customTime.m = floor((hourIn12 - floor(hourIn12)) * 60);
+  } else if (dragging === 'minute') {
+    minAngle = ang;
+    customTime.m = floor(map(minAngle, 0, 360, 0, 60));
+  } else if (dragging === 'second') {
+    secAngle = ang;
+    customTime.s = floor(map(secAngle, 0, 360, 0, 60));
+  }
+}
+
+function mouseReleased() {
+  dragging = null;
+}
+
+function mouseToClockAngle(mx, my) {
+  let dx = mx - cx;
+  let dy = my - cy;
+  let ang = degrees(atan2(dy, dx)) + 90;
+  if (ang < 0) ang += 360;
+  return ang;
+}
+
+function keyPressed() {
+  if (key === 'a') {
+    isRunning = !isRunning;
+    if (!isRunning) {
+       customTime = {
+        h: hour(),
+        m: minute(),
+        s: second()
+       }
+    } else {
+      customTime=null;
+      // return to real timem, doesn't keep the dragged time
+    }
+  }
+}
+
+	</script>
+	<p>Press key "a" to pause the clock, press again to run again.</p>
+	<p>After pause, use mouse to drag the orange circles, which will appear arond the yellow points, to adjust time.</p>
+	<p>When adjusting time, changes on each hand won't affect others. </p>
+	<p>Minute hand and hour hand could affect the day/night changes. Second hand could only spin 360 degree in that minute.</p>
+	<p>The custom time won't be recorded after pressing key again.</p>
+</body>
+</html>
