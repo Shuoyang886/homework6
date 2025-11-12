@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>line_by_line</title>
+	<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <style>
+        body {
+    background-color: #ff9c9c;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-bottom: 20px;
+  }
+
+   #canvas-holder {
+    margin: 0 auto;
+    display: block;
+    /* set the width and height to canvas_size * displayScale */
+  }
+
+  /* canvas's size would be adjusted inside the holder */
+  canvas {
+    display: block;
+    transform-origin: top left; /* set top left as the based point of changing size */
+  }
+  .gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2x2 arrangement */
+  gap: 30px; /* space between the images */
+  justify-items: center;
+  align-items: center;
+  max-width: 1000px; 
+  margin: 40px auto; 
+}
+
+.gallery-item {
+  text-align: center;
+}
+
+.gallery-item img {
+  width: 100%;
+  max-width: 450px; /* change the size of the image by setting the max, and keep the 1:1 ratio */
+  height: auto;
+  border-radius: 10px;/*round corner*/
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.gallery-item p {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+
+    </style>
+</head>
+
+<body>
+	 
+	
+	<h1>Project - Line by line</h1>
+	<p><a href="index.html">homepage</a></p>
+	  <div class="hint-block">
+    <p>Press key "O" for original image.</p>
+    <p>Press key "A" for "eye" mode.</p>
+    <p>Press key "B" for "glitch" mode.</p>
+    <p>Press key "C" for "blocks" mode.</p>
+    <p>Press key "D" for "dark" mode.</p>
+  </div>
+	<div id="canvas-holder"></div>
+	<script>
+//Author:Shuo Yang
+//Title: Line by line
+//Date:Nov 11
+//Instruction:run the code to see the original image;press key "A" to see the "eye" mode;press key "B" to see the "glitch" mode;press key "C" to see the "blocks" mode;press "D" to see the "dark" mode;press key "O" to see the original image
+
+let img;
+let marks;
+let blocks=[];
+let blockSize=300;
+let lines,rows;
+let mode='original'
+
+// the original size for p5's createCanvas）
+const CANVAS_W = 2100;
+const CANVAS_H = 2100;
+
+// change the scale by percentage
+const displayScale = 0.35; 
+
+let cnv;
+
+function preload() {
+  img=loadImage('images/girl.png');
+  marks = loadImage('images/marks.png');
+}
+function setup() {
+	
+  cnv = createCanvas(CANVAS_W, CANVAS_H);
+  cnv.parent('canvas-holder');
+
+  // set the holder's size to be the changed size
+  const holder = document.getElementById('canvas-holder');
+  holder.style.width = (CANVAS_W * displayScale) + 'px';
+  holder.style.height = (CANVAS_H * displayScale) + 'px';
+
+  // use css to change the size without changing the px
+  cnv.elt.style.transform = `scale(${displayScale})`;
+  cnv.elt.style.transformOrigin = 'top left';
+
+  holder.style.marginTop = '18px';//space between the top and the canvas
+  background('pink');
+  noLoop();
+  drawImage();
+  
+  
+  lines = int(img.width/blockSize);
+  rows = int(img.height/blockSize);
+  
+  for (let y=0;y<rows;y++){
+    for(let x=0;x<lines;x++){
+      let block = img.get(x*blockSize,y*blockSize,blockSize,blockSize);
+      blocks.push(block);
+    }
+  }
+  drawBlocks(blocks);
+  
+}
+
+function draw(){
+
+}
+
+
+function drawBlocks(arr){
+  let i=0;
+  for (let y=0;y<rows;y++){
+    for(let x=0; x<lines;x++){
+      if(i<arr.length){
+        image(arr[i],x*blockSize,y*blockSize,blockSize,blockSize);
+        i++;
+      }
+    }
+  }
+}
+
+function drawImage() {
+    background('pink');
+  
+  if (mode==='original'){
+    image(img,0,0);
+    
+  }else if (mode==='eye'){
+    
+    image(img,0,0);
+
+  let eyeX=420;
+  let eyeY=1020;
+  let eyeW=1050;
+  let eyeH=500;
+  
+  let slices=100;
+  let sliceH=eyeH/slices;
+  
+  for (let i=0;i<slices;i++){
+    let sy=eyeY+i*sliceH;
+    let dy=eyeY+i*sliceH;
+    let offset = random (-100,100);
+  
+    image(img,eyeX+offset,dy,eyeW,sliceH,eyeX,sy,eyeW,sliceH);
+}
+  } else if (mode === 'glitch'){
+    image(img,0,0);
+    tint(0,255,0,150);
+    image(img,-20,0);
+    tint(255,0,0,150);
+    image(img, 20, 0);
+    tint(249,255,66,150);
+    image(img,-10,0);
+    tint(0,0,255,150);
+    image(img,10,0);
+    tint(15, 251, 249,150);
+    image(img,5,0);
+    noTint();
+    
+    let glitchParts = 15; 
+    for (let i = 0; i < glitchParts; i++) {
+      let gx = random(img.width);
+      let gy = random(img.height);
+      let gw = random(200, 600);
+      let gh = random(50, 200);
+      let offsetX = random(-100, 100);//shift on x direction
+      let offsetY = random(-50, 50);
+      let block = img.get(gx, gy, gw, gh);
+
+      let scaleFactor = random(1.1, 1.5);
+      image(block, gx + offsetX, gy + offsetY, gw * scaleFactor, gh * scaleFactor);
+ }
+  }else if (mode==='blocks'){
+     shuffle(blocks,true);
+     drawBlocks(blocks);
+    
+ 
+  }else if (mode === 'dark') {
+    background(0,8,117);
+    
+    push();
+    image(img, 0,0);
+     tint(0,0,0,220);
+    image(img, 0, 0);
+    pop();//so the tint would only work on the image of girl
+    
+    image(marks, 0, 0, img.width, img.height);
+  }
+}
+
+function keyPressed(){
+  if (key ==='O'||key==='o'){
+    mode='original';
+  }else if (key==='A'||key==='a'){
+    mode='eye';
+  }else if (key==='B'||key ==='b'){
+    mode='glitch';
+  }else if (key==='C'||key==='c'){
+    mode='blocks';
+  }else if (key === 'D' || key === 'd') {
+    mode = 'dark';
+  }
+  drawImage();
+}
+	</script>
+	  <div class="gallery">
+    <div class="gallery-item">
+      <img src="images/a1.png" alt="Eye mode">
+      <p>"Eye" mode</p>
+    </div>
+    <div class="gallery-item">
+      <img src="images/b2.png" alt="Glitch mode">
+      <p>"Glitch" mode</p>
+    </div>
+    <div class="gallery-item">
+      <img src="images/c3.png" alt="Blocks mode">
+      <p>"Blocks" mode</p>
+    </div>
+    <div class="gallery-item">
+      <img src="images/d4.png" alt="Dark mode">
+      <p>"Dark" mode</p>
+    </div>
+  </div>
+	<p style="font-size: 8px;">Follow my art account on Instagram: @amela.ys for more arts!!! plz :( </p>
+</body>
+</html>
