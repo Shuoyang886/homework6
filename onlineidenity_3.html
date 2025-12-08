@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Webframe Chat — themed GIFs</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  body{
+    background:#e9e9e9;
+    display:flex;
+    justify-content:center;
+    padding-top:30px;
+    font-family:Arial, Helvetica, sans-serif;
+  }
+  .frame-container{
+    width:450px; /* you chose B */
+    position:relative;
+  }
+  .frame{ width:100%; display:block; }
+  /* hole: scaled position of the black region you provided */
+  .hole{
+    position:absolute;
+    overflow:hidden;
+    left: calc(46px * (450 / 1080));
+    top:  calc(171px * (450 / 1080));
+    width: calc(988px * (450 / 1080));
+    height: calc(1030px * (450 / 1080));
+    pointer-events:none;
+  }
+
+  /* GIF occupies upper portion of the hole */
+  #gif {
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    top: 6%; /* small top margin */
+    width: 70%; /* GIF size relative to hole width; adjust */
+    height: auto;
+    pointer-events:none;
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  /* messages area anchored to bottom of hole */
+  .messages{
+    position:absolute;
+    bottom:10px;
+    left:0;
+    width:100%;
+    padding: 6px 12px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    pointer-events:none;
+  }
+
+  .bubble{
+    max-width:86%;
+    padding:10px 14px;
+    background: rgba(255,255,255,0.98);
+    border-radius:10px;
+    font-size:14px;
+    align-self:flex-start;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    animation: riseAndFade 4s linear forwards;
+  }
+
+  @keyframes riseAndFade {
+    0%   { transform: translateY(0); opacity: 1; }
+    70%  { transform: translateY(-60px); opacity: 1; }
+    100% { transform: translateY(-120px); opacity: 0; }
+  }
+
+  .input-area{
+    margin-top:18px;
+    width:450px;
+    display:flex;
+    gap:10px;
+  }
+  input{ flex:1; padding:10px; font-size:15px; }
+  button{ padding:10px 14px; font-size:15px; background:#177cff; color:#fff; border:0; border-radius:6px; cursor:pointer; }
+  small.note{display:block; margin-top:8px; color:#666; font-size:12px;}
+</style>
+</head>
+<body>
+
+<div class="frame-container">
+  <img src="webframe.png" class="frame" alt="webframe">
+  <div class="hole" id="hole">
+    <img id="gif" src="111" alt="character gif">
+    <div class="messages" id="messages"></div>
+  </div>
+</div>
+
+<div class="input-area">
+  <input id="userInput" placeholder="Type something..." />
+  <button id="sendBtn">Send</button>
+</div>
+<small class="note">Press 1 = real, 2 = persona</small>
+
+<script>
+/* -------------------------
+   THEMED GIF STRUCTURE
+   Directory layout expected:
+   images/
+     real/
+       rlTalk/   -> gif files
+       rlThink/
+       rlQuestion/
+       rlHappy/
+     persona/
+       talk/
+       art/
+       think/
+       question/
+---------------------------*/
+
+const gifs = {
+  real: {
+    rlTalk: [
+      "images/real/rltalk.gif"
+    ],
+    rlThink: [
+      "images/real/rlthink.gif"
+    ],
+    rlQuestion: [
+      "images/real/rlquestion.gif"
+    ],
+    rlHappy: [
+      "images/real/rlHappy/1.gif"
+    ]
+  },
+  persona: {
+    talk: [
+      "images/persona/talk.gif"
+    ],
+    art: [
+      "images/persona/shareart.gif"
+    ],
+    think: [
+      "images/persona/think.gif"
+    ],
+    question: [
+      "images/persona/question.gif"
+    ]
+  }
+};
+
+/* -------------------------
+   MESSAGE POOLS (each message has a theme)
+---------------------------*/
+const realMessages = [
+  { text: "......", theme: "rlThink" },
+  { text: "i wish i could just speak when i want to", theme: "rlTalk" },
+  { text: "do you feel the same?", theme: "rlQuestion" },
+  { text: "have you ever think about death?", theme: "rlTalk" },
+  { text: "thank you for sharing those", theme: "rlTalk" },
+  { text: "i think i can say i know you now, are we friends?", theme: "rlTalk" },
+ 
+];
+
+const personaMessages = [
+  { text: "talk to me", theme: "talk" },
+  { text: "what else can i say", theme: "question" },
+  { text: "i agree", theme: "talk" },
+  { text: "eh....", theme: "talk" },
+  { text: "i do love human, but sometimes i also hate them", theme: "talk" },
+  { text: "......", theme: "think" }
+];
+
+/* -------------------------
+   Helpers
+---------------------------*/
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+/* -------------------------
+   Mode and UI refs
+---------------------------*/
+let mode = "real"; // default
+const gifEl = document.getElementById("gif");
+const messagesEl = document.getElementById("messages");
+const sendBtn = document.getElementById("sendBtn");
+const userInput = document.getElementById("userInput");
+
+/* -------------------------
+   Show GIF for a given theme (uses current mode)
+   If no GIF found for theme, falls back to any theme in mode.
+---------------------------*/
+function showGifForTheme(theme){
+  const pool = gifs[mode] || {};
+  const list = pool[theme] || [];
+
+  if(list.length > 0){
+    gifEl.src = pick(list);
+    return;
+  }
+  // fallback: pick any gif in current mode
+  const allLists = Object.values(pool).flat();
+  if(allLists.length > 0){
+    gifEl.src = pick(allLists);
+  } else {
+    gifEl.src = ""; // nothing available
+  }
+}
+
+/* -------------------------
+   Add a bubble (p5 bubble logic replaced by DOM + CSS animation)
+   We preserve the behavior: bubble rises and fades then gets removed.
+---------------------------*/
+function addBubble(text){
+  const b = document.createElement("div");
+  b.className = "bubble";
+  b.textContent = text;
+  messagesEl.appendChild(b);
+  // remove after animation finishes (4s)
+  setTimeout(()=> b.remove(), 4200);
+}
+
+/* -------------------------
+   NPC selects a message (object with theme), shows GIF according to theme,
+   and displays the bubble text.
+---------------------------*/
+function npcReply(){
+  const pool = (mode === "real") ? realMessages : personaMessages;
+  const msg = pick(pool);
+  showGifForTheme(msg.theme);
+  addBubble(msg.text);
+}
+
+/* -------------------------
+   When user sends (you can later route player's text into message pool)
+---------------------------*/
+function sendMessage(){
+  const t = userInput.value.trim();
+  if(!t) return;
+  // show player's message as a right-side bubble style
+  const pb = document.createElement("div");
+  pb.className = "bubble";
+  pb.style.alignSelf = "flex-end";
+  pb.style.background = "rgba(120,200,255,0.95)";
+  pb.textContent = t;
+  messagesEl.appendChild(pb);
+  userInput.value = "";
+  setTimeout(()=> pb.remove(), 4200);
+
+  // after short delay, NPC replies with a themed message & themed GIF
+  setTimeout(npcReply, 700);
+}
+
+/* -------------------------
+   Key handlers for switching mode
+---------------------------*/
+document.addEventListener("keydown", e=>{
+  if(e.key === "1"){
+    mode = "real";
+    // immediate reaction
+    npcReply();
+  } else if(e.key === "2"){
+    mode = "persona";
+    npcReply();
+  }
+});
+
+/* -------------------------
+   Hook up button and Enter key
+---------------------------*/
+sendBtn.addEventListener("click", sendMessage);
+userInput.addEventListener("keydown", e=>{
+  if(e.key === "Enter"){ sendMessage(); }
+});
+
+/* -------------------------
+   Startup: show initial message & gif
+---------------------------*/
+window.addEventListener("load", ()=>{
+  // pick first NPC message on load
+  const initialPool = (mode === "real") ? realMessages : personaMessages;
+  const initial = pick(initialPool);
+  showGifForTheme(initial.theme);
+  addBubble(initial.text);
+});
+</script>
+	<p><a href="index.html">homepage</a></p>
+</body>
+</html>
+
+
