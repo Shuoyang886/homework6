@@ -1,0 +1,150 @@
+
+/* General settings */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #F4F2ED;
+    color: #171717;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Main container */
+
+.container {
+    width: 90%;
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 60px 0;
+}
+
+/* Header */
+
+header {
+    text-align: center;
+    margin-bottom: 65px;
+}
+
+.subtitle {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #77736D;
+}
+
+h1 {
+    font-size: 30px;
+    letter-spacing: 3px;
+    font-weight: 800;
+}
+
+.divider {
+    width: 42px;
+    height: 3px;
+    background-color: #171717;
+    margin: 25px auto;
+}
+
+/* Question */
+
+.question-section h2 {
+    font-size: 36px;
+    line-height: 1.25;
+    margin-bottom: 15px;
+}
+
+.description {
+    color: #77736D;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+/* Form */
+
+#pressure-form {
+    background-color: #FFFDF8;
+    border: 1px solid #C7C2B9;
+    padding: 25px;
+}
+
+label {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 130px;
+    resize: vertical;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+textarea::placeholder {
+    color: #AAA69E;
+}
+
+.counter {
+    text-align: right;
+    color: #77736D;
+    font-size: 12px;
+    margin: 10px 0 20px;
+}
+
+/* Submit button */
+
+button {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    background-color: #171717;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #55504A;
+}
+
+.feedback {
+    text-align: center;
+    color: #77736D;
+    font-size: 13px;
+    margin-top: 25px;
+}
+
+/* Mobile adjustments */
+
+@media (max-width: 500px) {
+
+    .container {
+        padding: 40px 0;
+    }
+
+    header {
+        margin-bottom: 45px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .question-section h2 {
+        font-size: 29px;
+    }
+
+}

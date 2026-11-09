@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pressure Shredder</title>
+
+    <link rel="stylesheet" href="Pressure_Shredder_style.css">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <header>
+            <p class="subtitle">AN INTERACTIVE INSTALLATION</p>
+            <h1>PRESSURE SHREDDER</h1>
+            <div class="divider"></div>
+        </header>
+
+        <section class="question-section">
+
+            <h2>
+                What prevents you from getting a good rest?
+            </h2>
+
+            <p class="description">
+                Take a moment to think about it.
+                What is keeping you from resting?
+            </p>
+
+            <form id="pressure-form">
+
+                <label for="pressure-input">
+                    YOUR PRESSURE
+                </label>
+
+                <textarea
+                    id="pressure-input"
+                    maxlength="150"
+                    placeholder="I'm worried about..."
+                    required
+                ></textarea>
+
+                <div class="counter">
+                    <span id="char-count">0</span> / 150
+                </div>
+
+                <button type="submit">
+                    SHRED MY PRESSURE ↗
+                </button>
+
+            </form>
+
+            <p id="feedback" class="feedback">
+                Your words will appear on the wall.
+            </p>
+
+        </section>
+
+    </main>
+
+    <script src="visitor.js"></script>
+
+</body>
+</html>
