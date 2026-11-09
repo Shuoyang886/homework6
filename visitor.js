@@ -4,7 +4,7 @@
 // ==========================================
 
 // Replace these with your own Supabase information
-const SUPABASE_URL = "https://seqbdiekbxkbsqsxcmzg.supabase.co/rest/v1/";
+const SUPABASE_URL = "https://seqbdiekbxkbsqsxcmzg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_VC_c8Ief4UyxF5g1fKIAWw_P_cLvQQ5";
 
 const supabaseClient = window.supabase.createClient(
