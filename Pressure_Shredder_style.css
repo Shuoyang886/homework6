@@ -7,7 +7,11 @@
 
 body {
     margin: 0;
-    background-color: #F4F2ED;
+    background-image: url("images/Clouds_Drifting_GIF.gif");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: #171717;
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -20,7 +24,13 @@ body {
     margin: 0 auto;
     padding: 60px 0;
 }
+/* Text shadow for light-colored text */
 
+.subtitle,
+.description,
+.feedback {
+    text-shadow: 1px 1px 3px rgba(80, 80, 80, 0.8);
+}
 /* Header */
 
 header {
@@ -31,7 +41,7 @@ header {
 .subtitle {
     font-size: 11px;
     letter-spacing: 3px;
-    color: #77736D;
+    color: #F8F8FF;
 }
 
 h1 {
@@ -56,7 +66,7 @@ h1 {
 }
 
 .description {
-    color: #77736D;
+    color: #F8F8FF;
     font-size: 15px;
     line-height: 1.6;
     margin-bottom: 40px;
@@ -96,7 +106,7 @@ textarea::placeholder {
 
 .counter {
     text-align: right;
-    color: #77736D;
+    color: #AAA69E;
     font-size: 12px;
     margin: 10px 0 20px;
 }
@@ -122,7 +132,7 @@ button:hover {
 
 .feedback {
     text-align: center;
-    color: #77736D;
+    color: #F8F8FF;
     font-size: 13px;
     margin-top: 25px;
 }

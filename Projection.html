@@ -1,0 +1,558 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pressure Shredder - Projection</title>
+
+<style>
+
+/* General settings */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: Georgia, "Times New Roman", serif;
+    color: #39332C;
+
+    background-color: #E9DFCE;
+    background-image:
+        radial-gradient(#D5C8B5 0.7px, transparent 0.7px),
+        linear-gradient(135deg, #F5EFE4, #E6D9C6);
+    background-size: 8px 8px, 100% 100%;
+}
+
+/* Main stage */
+
+.stage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    min-height: 500px;
+    overflow: hidden;
+}
+
+/* Header */
+
+header {
+    position: absolute;
+    top: 35px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+}
+
+.subtitle {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: #9B8974;
+}
+
+h1 {
+    font-family: Georgia, serif;
+    font-size: 32px;
+    letter-spacing: 5px;
+    margin: 10px 0;
+    font-weight: normal;
+}
+
+.description {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #968776;
+    letter-spacing: 1px;
+}
+
+/* Paper notes */
+
+#paper-area {
+    position: absolute;
+    top: 155px;
+    left: 5%;
+    right: 5%;
+    bottom: 155px;
+    overflow: hidden;
+}
+
+.paper {
+    position: absolute;
+    width: 190px;
+    min-height: 135px;
+    padding: 25px 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #FFFDF5;
+    box-shadow: 2px 5px 12px rgba(75, 60, 40, 0.16);
+
+    font-size: 17px;
+    line-height: 1.5;
+    text-align: center;
+
+    transform: rotate(var(--rotation));
+    animation: appear 0.8s ease both;
+    transition: box-shadow 0.3s;
+}
+
+
+/* Soft pastel sticky note colors */
+
+.paper:nth-child(4n + 1) {
+    background: #FFF0D5;
+}
+
+.paper:nth-child(4n + 2) {
+    background: #DCEAF4;
+}
+
+.paper:nth-child(4n + 3) {
+    background: #DFEBDD;
+}
+
+.paper:nth-child(4n) {
+    background: #F5E1E3;
+}
+
+
+.paper:hover {
+    box-shadow: 4px 9px 18px rgba(75, 60, 40, 0.24);
+}
+
+.paper.shredding {
+    animation: shred 0.7s ease-in forwards;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(25px) rotate(0deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) rotate(var(--rotation));
+    }
+}
+
+@keyframes shred {
+    0% {
+        opacity: 1;
+        transform: translateY(0) rotate(var(--rotation)) scale(1);
+        clip-path: inset(0 0 0 0);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: translateY(40px) rotate(12deg) scale(0.8);
+        clip-path: inset(35% 0 35% 0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(200px) rotate(30deg) scale(0.2);
+        clip-path: inset(50% 0 50% 0);
+    }
+}
+
+/* Bottom section */
+
+footer {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+}
+
+#shred-button {
+    padding: 15px 40px;
+    background: #494039;
+    color: #FFFDF5;
+    border: none;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#shred-button:hover {
+    background: #8A5948;
+}
+
+#message-count {
+    margin-top: 12px;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #9B8974;
+}
+
+/* Empty state */
+
+#empty-message {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #9B8974;
+    font-style: italic;
+    font-size: 20px;
+}
+
+/* Responsive adjustments */
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 23px;
+    }
+
+    .paper {
+        width: 145px;
+        min-height: 110px;
+        font-size: 14px;
+        padding: 18px;
+    }
+
+    #paper-area {
+        inset: 130px 3% 100px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="stage">
+
+    <header>
+        <div class="subtitle">LET GO OF WHAT YOU CARRY</div>
+        <h1>PRESSURE SHREDDER</h1>
+        <div class="description">
+            Every piece of paper holds something we want to let go.
+        </div>
+    </header>
+
+    <!-- Paper messages -->
+
+    <div id="paper-area">
+    </div>
+
+    <div id="empty-message">
+         Waiting for messages...
+    </div>
+
+    <footer>
+        <button id="shred-button" onclick="shredAll()">
+            SHRED ALL
+        </button>
+
+        <div id="message-count">
+            0 MESSAGES COLLECTED
+        </div>
+    </footer>
+
+</div>
+
+<script>
+
+
+// ======================================
+// 1. SUPABASE CONNECTION
+// ======================================
+
+const SUPABASE_URL = "https://seqbdiekbxkbsqsxcmzg.supabase.co";
+const SUPABASE_KEY = "sb_publishable_VC_c8Ief4UyxF5g1fKIAWw_P_cLvQQ5";
+
+const db = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+// ======================================
+// 2. PAGE ELEMENTS
+// ======================================
+
+const paperArea = document.getElementById("paper-area");
+const messageCount = document.getElementById("message-count");
+const emptyMessage = document.getElementById("empty-message");
+const shredButton = document.getElementById("shred-button");
+
+const renderedIds = new Set();
+
+
+// ======================================
+// 3. UPDATE MESSAGE COUNT
+// ======================================
+
+function updateCount() {
+
+    const total = paperArea.querySelectorAll(".paper").length;
+
+    messageCount.textContent =
+        total + (total === 1
+        ? " MESSAGE COLLECTED"
+        : " MESSAGES COLLECTED");
+}
+
+
+// ======================================
+// 4. CREATE A PAPER NOTE
+// ======================================
+
+
+
+function addPaper(message) {
+
+    // Avoid duplicate messages
+    if (!message || !message.id || renderedIds.has(message.id)) {
+        return;
+    }
+
+    const paper = document.createElement("div");
+
+    paper.className = "paper";
+    paper.textContent = message.content;
+    paper.dataset.messageId = message.id;
+
+    const rotation = (Math.random() * 12 - 6).toFixed(1);
+    paper.style.setProperty("--rotation", rotation + "deg");
+
+    // Hide temporarily while measuring
+    paper.style.visibility = "hidden";
+    paper.style.animation = "none";
+    paper.style.left = "0px";
+    paper.style.top = "0px";
+
+    paperArea.appendChild(paper);
+
+    const paperWidth = paper.offsetWidth;
+    const paperHeight = paper.offsetHeight;
+
+    const edgePadding = 20;
+    const gap = 25;
+
+    const areaWidth = paperArea.clientWidth;
+    const areaHeight = paperArea.clientHeight;
+
+    const maxLeft = areaWidth - paperWidth - edgePadding;
+    const maxTop = areaHeight - paperHeight - edgePadding;
+
+    let positionFound = false;
+    let left = 0;
+    let top = 0;
+
+    for (let attempt = 0; attempt < 500; attempt++) {
+
+        left = edgePadding +
+            Math.random() * Math.max(0, maxLeft - edgePadding);
+
+        top = edgePadding +
+            Math.random() * Math.max(0, maxTop - edgePadding);
+
+        let overlap = false;
+
+        const existingPapers = paperArea.querySelectorAll(
+            ".paper:not(:last-child)"
+        );
+
+        for (const other of existingPapers) {
+
+            const otherLeft = other.offsetLeft;
+            const otherTop = other.offsetTop;
+            const otherRight = otherLeft + other.offsetWidth;
+            const otherBottom = otherTop + other.offsetHeight;
+
+            const rotationBuffer = 15;
+
+            const isOverlapping =
+                left - rotationBuffer < otherRight + gap &&
+                left + paperWidth + rotationBuffer > otherLeft - gap &&
+                top - rotationBuffer < otherBottom + gap &&
+                top + paperHeight + rotationBuffer > otherTop - gap;
+
+            if (isOverlapping) {
+                overlap = true;
+                break;
+            }
+        }
+
+        if (!overlap) {
+            positionFound = true;
+            break;
+        }
+    }
+
+    if (!positionFound) {
+        paper.remove();
+        return;
+    }
+
+    paper.style.left = left + "px";
+    paper.style.top = top + "px";
+    paper.style.visibility = "visible";
+    paper.style.animation = "";
+
+    renderedIds.add(message.id);
+
+    emptyMessage.style.display = "none";
+
+    updateCount();
+}
+
+
+// ======================================
+// 5. LOAD EXISTING MESSAGES
+// ======================================
+
+async function loadMessages() {
+
+    const { data, error } = await db
+        .from("messages")
+        .select("id, content, created_at")
+        .order("created_at", { ascending: false })
+        .limit(30);
+
+    if (error) {
+
+        console.error("Could not load messages:", error);
+
+        emptyMessage.textContent = "Unable to load messages.";
+        emptyMessage.style.display = "block";
+
+        return;
+    }
+
+    // Show oldest first, newest last
+
+    data.reverse().forEach(message => {
+        addPaper(message);
+    });
+
+    if (data.length === 0) {
+        emptyMessage.textContent = "Waiting for messages...";
+        emptyMessage.style.display = "block";
+    }
+}
+
+
+// ======================================
+// 6. REALTIME LISTENER
+// ======================================
+
+const messageChannel = db
+    .channel("projection-messages")
+    .on(
+        "postgres_changes",
+        {
+            event: "INSERT",
+            schema: "public",
+            table: "messages"
+        },
+        (payload) => {
+
+            console.log("New message received:", payload.new);
+
+            addPaper(payload.new);
+
+        }
+    )
+    .subscribe((status) => {
+
+        console.log("Realtime status:", status);
+
+        if (status === "SUBSCRIBED") {
+            console.log("Projection is connected!");
+        }
+
+        if (status === "CHANNEL_ERROR") {
+            console.error("Realtime connection error.");
+        }
+
+    });
+
+
+// ======================================
+// 7. SHRED ALL PAPERS
+// ======================================
+
+function shredAll() {
+
+    const papers = Array.from(
+        paperArea.querySelectorAll(".paper")
+    );
+
+    if (papers.length === 0) {
+        return;
+    }
+
+    shredButton.disabled = true;
+
+    papers.forEach((paper, index) => {
+
+        setTimeout(() => {
+
+            paper.classList.add("shredding");
+
+            setTimeout(() => {
+
+                const id = paper.dataset.messageId;
+
+                paper.remove();
+
+                updateCount();
+
+                if (paperArea.querySelectorAll(".paper").length === 0) {
+
+                    emptyMessage.textContent = "A little lighter now.";
+                    emptyMessage.style.display = "block";
+
+                    shredButton.disabled = false;
+                }
+
+            }, 750);
+
+        }, index * 100);
+
+    });
+
+    // Reset button after shredding
+
+    setTimeout(() => {
+
+        shredButton.disabled = false;
+
+    }, papers.length * 100 + 800);
+
+}
+
+
+// ======================================
+// 8. START PROJECTION
+// ======================================
+
+// Subscribe first, then fetch existing messages.
+// This helps avoid missing messages during initial loading.
+
+loadMessages();
+
+</script>
+
+</body>
+</html>

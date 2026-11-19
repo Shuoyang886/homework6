@@ -37,7 +37,8 @@ input.addEventListener("input", function() {
 // 4. Handle form submission
 // ==========================================
 
-form.addEventListener("submit", async function(event) {
+
+form.addEventListener("submit", function(event) {
 
     event.preventDefault();
 
@@ -51,39 +52,41 @@ form.addEventListener("submit", async function(event) {
     submitButton.disabled = true;
     feedback.textContent = "Sending your pressure...";
 
-    try {
+    // Send message to Supabase
+    supabaseClient
+        .from("messages")
+        .insert({
+            content: message
+        })
 
-        // Send the message to Supabase
-        const { error } = await supabaseClient
-            .from("messages")
-            .insert({
-                content: message
-            });
+        .then(function(result) {
 
-        if (error) {
-            throw error;
-        }
+            if (result.error) {
+                throw result.error;
+            }
 
-        // Only show success if the database saved the message
-        feedback.textContent =
-            "Your pressure has been released into the room.";
+            // Show success message
+            feedback.textContent =
+                "Your pressure has been released into the room.";
 
-        // Clear the input after successful submission
-        input.value = "";
-        counter.textContent = "0";
+            // Clear input
+            input.value = "";
+            counter.textContent = "0";
 
-    } catch (error) {
+        })
 
-        console.error("Submission error:", error);
+.catch(function() {
 
-        feedback.textContent =
-            "Something went wrong. Please try again.";
+    feedback.textContent =
+        "Something went wrong. Please try again.";
 
-    } finally {
+})
 
-        // Allow another submission
-        submitButton.disabled = false;
+        .then(function() {
 
-    }
+            // Allow another submission
+            submitButton.disabled = false;
+
+        });
 
 });
